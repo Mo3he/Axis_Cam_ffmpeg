@@ -54,6 +54,12 @@ For example
 ```
 /usr/local/packages/ffmpeg/lib/ffmpeg -h
 ```
+or
+```
+/usr/local/packages/ffmpeg/lib/ffmpeg -i /var/spool/storage/SD_DISK/20230320/10/20230320_100159_7748_B8A44F2B5C09/20230427_08
+/20230427_084845_BD8B.mkv /var/spool/storage/SD_DISK/20230320/10/20230320_100159_7748_B8A44F2B5C09/20230427_08/20230427_084845_BD8B.mp4
+```
+The above would cpnvert the specified recording on the SD card from .mkv to an mp4 file.
 
 When uninstalling the ACAP, all changes and files are removed from the camera.
 
