@@ -1,0 +1,7 @@
+#!/bin/sh
+
+    echo "Setting Privlages"
+    chmod 777 /usr/local/packages/ffmpeg/lib/ffmpeg
+    chmod 777 /usr/local/packages/ffmpeg/lib/ffprobe
+    chmod 777 /usr/local/packages/ffmpeg/lib/qt-faststart
+    echo "Privlages Set"

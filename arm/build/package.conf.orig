@@ -1,0 +1,12 @@
+APPNAME="ffmpeg"
+PACKAGENAME="ffmpeg"
+VENDOR="ffmpeg - Packaged by Mo3he"
+REQEMBDEVVERSION="3.0"
+APPGRP="root"
+APPUSR="root"
+VENDORHOMEPAGELINK='<a href="https://ffmpeg.org/" target="_blank">ffmpeg.org/</a>'
+STARTMODE="once"
+APPMAJORVERSION="1"
+APPMINORVERSION="0"
+APPMICROVERSION="0"
+SETTINGSPAGEFILE="index.html"
