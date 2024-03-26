@@ -6,7 +6,7 @@ Current version 1.0.0
 
 
 ## Warning
-Axis is making changes to its firmware that will include the removal of root privliages from ACAP.
+Axis is making changes to its firmware that will include the removal of root privileges from ACAP.
 With the release of Axis OS 12, ACAP's requiring root will no longer work.
 The ffmpeg ACAP requires root to function.
  
