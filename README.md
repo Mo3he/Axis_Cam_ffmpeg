@@ -4,6 +4,8 @@ This ACAP packages the scripts and files required to install the ffmpeg server o
 
 Current version 1.0.0
 
+### Disclaimer: This is an independent, community-developed ACAP package and is not an official Axis Communications product. It was developed entirely on personal time and is not affiliated with, endorsed by, or supported by Axis Communications AB. Use it at your own risk. For official Axis software, visit axis.com 
+
 
 ## Warning
 Axis is making changes to its firmware that will include the removal of root privileges from ACAP.
