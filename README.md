@@ -1,74 +1,98 @@
 # The ffmpeg installer ACAP
 
-This ACAP packages the scripts and files required to install the ffmpeg server on Axis Cameras.
+This ACAP packages the scripts and files required to install the ffmpeg binaries on Axis Cameras.
 
-Current version 2.0.0
+[![Releases](https://img.shields.io/github/v/release/Mo3he/Axis_Cam_ffmpeg)](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases)  
+[![License](https://img.shields.io/github/license/Mo3he/Axis_Cam_ffmpeg)](LICENSE)  
+![Total Downloads](https://img.shields.io/github/downloads/Mo3he/Axis_Cam_ffmpeg/total?style=flat&label=Downloads&color=blue)  
+[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-lightgrey?logo=github)](https://github.com/sponsors/Mo3he)  
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-orange?style=flat&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/mo3he)
 
-### Disclaimer: This is an independent, community-developed ACAP package and is not an official Axis Communications product. It was developed entirely on personal time and is not affiliated with, endorsed by, or supported by Axis Communications AB. Use it at your own risk. For official Axis software, visit axis.com 
+> **Disclaimer:** This is an independent, community-developed ACAP package and is not an official Axis Communications product. It is not affiliated with, endorsed by, or supported by Axis Communications AB. Use it at your own risk. For official Axis software, visit axis.com.
 
+---
 
-## Root not required
-As of version 2.0.0 this ACAP no longer needs root. It only ships the static ffmpeg/ffprobe/qt-faststart binaries (packaged world-executable, runMode never), so it is compatible with Axis OS 12+. Other ACAPs can call the binaries directly, e.g. /usr/local/packages/ffmpeg/lib/ffmpeg. This pairs with the go2rtc ACAP, which auto-uses that path for JPEG snapshots and transcoding.
+## Table of Contents
 
-## Purpose
+- [Overview](#overview)
+- [Compatibility](#compatibility)
+- [Installation](#installation)
+- [Using the ffmpeg ACAP](#using-the-ffmpeg-acap)
+- [Build from Source](#build-from-source)
+- [License](#license)
+
+---
+
+## Overview
 
 ffmpeg is a complete, cross-platform solution to record, convert and stream audio and video.
 
-## Links
+Current version: **2.0.0**
 
-https://ffmpeg.org/
+As of version 2.0.0 this ACAP no longer needs root. It only ships the static ffmpeg/ffprobe/qt-faststart binaries (packaged world-executable, runMode never), so it is compatible with Axis OS 12+. Other ACAPs can call the binaries directly, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs with the go2rtc ACAP, which auto-uses that path for JPEG snapshots and transcoding.
 
-https://www.axis.com/
+---
 
 ## Compatibility
 
-The Axis_Cam_ffmpeg is compatable with Axis cameras with arm and aarch64 based Soc's.
+Compatible with Axis cameras with arm and aarch64 based SoCs.
+
+To check your camera architecture:
 
 ```
 curl --anyauth "*" -u <username>:<password> <device ip>/axis-cgi/basicdeviceinfo.cgi --data "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllProperties\"}"
 ```
 
-where `<device ip>` is the IP address of the Axis device, `<username>` is the root username and `<password>` is the root password. Please
-note that you need to enclose your password with quotes (`'`) if it contains special characters.
+---
 
-## Installing
+## Installation
 
-The recommended way to install this ACAP is to use the prebuilt eap file from the
-[Releases](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases) page.
-Go to "Apps" on the camera and click "Add app". The app installs Stopped and never
-runs (runMode never); it only places the binaries on the device.
+Get the **prebuilt `.eap` file** from the [Releases page](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases).
+
+1. Log into your Axis camera.
+2. Go to **Apps -> Add App**.
+3. Upload the `.eap` file.
+
+The app installs Stopped and never runs (runMode never); it only places the binaries on the device.
+
+On uninstall, all files are removed from the camera.
+
+---
 
 ## Using the ffmpeg ACAP
 
 The package only stages the binaries; there is nothing to start. They live at:
+
 ```
 /usr/local/packages/ffmpeg/lib/ffmpeg
 /usr/local/packages/ffmpeg/lib/ffprobe
 /usr/local/packages/ffmpeg/lib/qt-faststart
 ```
-They are world-executable, so other ACAPs (for example the go2rtc ACAP) can call
-them directly, and you can invoke them over ssh:
+
+They are world-executable, so other ACAPs (for example the go2rtc ACAP) can call them directly, and you can invoke them over ssh:
+
 ```
 /usr/local/packages/ffmpeg/lib/ffmpeg -h
 ```
-When uninstalling the ACAP, all files are removed from the camera.
 
+---
 
-## Build from source
-To build, 
-From main directory of the version you want (arm/aarch64)
+## Build from Source
+
+From the main directory of the version you want (arm/aarch64):
 
 ```
-docker build --tag <package name> . 
+docker build --tag <package name> .
 ```
 ```
-docker cp $(docker create <package name>):/opt/app ./build 
+docker cp $(docker create <package name>):/opt/app ./build
 ```
+
+---
 
 ## License
-The ffmpeg binaries are static builds distributed under the GPL. ffmpeg source
-and license: https://ffmpeg.org/. The packaging scripts in this repo are MIT
-(see LICENSE).
+
+The ffmpeg binaries are static builds distributed under the GPL. ffmpeg source and license: https://ffmpeg.org/. The packaging scripts in this repo are MIT (see [LICENSE](LICENSE)).
 
 
 

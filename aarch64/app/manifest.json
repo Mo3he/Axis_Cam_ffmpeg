@@ -4,9 +4,9 @@
       "setup": {
           "appName": "ffmpeg",
           "friendlyName": "ffmpeg",
-          "vendor": "ffmpeg - Packaged by Mo3he",
+          "vendor": "Mo3he",
           "embeddedSdkVersion": "3.0",
-          "vendorUrl": "https://ffmpeg.org/",
+          "vendorUrl": "https://github.com/Mo3he/Axis_Cam_ffmpeg",
           "runMode": "never",
           "version": "2.0.0"
         },
