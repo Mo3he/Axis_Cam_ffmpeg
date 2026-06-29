@@ -3,8 +3,6 @@
 This ACAP packages the scripts and files required to install the ffmpeg binaries on Axis Cameras.
 
 [![Releases](https://img.shields.io/github/v/release/Mo3he/Axis_Cam_ffmpeg)](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases)  
-[![License](https://img.shields.io/github/license/Mo3he/Axis_Cam_ffmpeg)](LICENSE)  
-![Total Downloads](https://img.shields.io/github/downloads/Mo3he/Axis_Cam_ffmpeg/total?style=flat&label=Downloads&color=blue)  
 [![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-lightgrey?logo=github)](https://github.com/sponsors/Mo3he)  
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-orange?style=flat&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/mo3he)
 
