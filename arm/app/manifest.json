@@ -9,9 +9,6 @@
           "vendorUrl": "https://github.com/Mo3he/Axis_Cam_ffmpeg",
           "runMode": "never",
           "version": "2.0.0"
-        },
-        "configuration":  {
-          "settingPage": "index.html"
         }
       }
   }
