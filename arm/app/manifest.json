@@ -1,14 +1,15 @@
 {
-  "schemaVersion": "1.3",
+  "schemaVersion": "2.0.0",
   "acapPackageConf": {
       "setup": {
           "appName": "ffmpeg",
           "friendlyName": "ffmpeg",
           "vendor": "Mo3he",
-          "embeddedSdkVersion": "3.0",
+          "vendorId": "5741c1fb91",
           "vendorUrl": "https://github.com/Mo3he/Axis_Cam_ffmpeg",
           "runMode": "never",
-          "version": "2.0.0"
+          "version": "2.0.0",
+          "compatibleOsVersions": [ { "max": "13" } ]
         }
       }
   }

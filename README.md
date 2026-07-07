@@ -27,7 +27,7 @@ ffmpeg is a complete, cross-platform solution to record, convert and stream audi
 
 Current version: **2.0.0**
 
-As of version 2.0.0 this ACAP no longer needs root. It only ships the static ffmpeg/ffprobe/qt-faststart binaries (packaged world-executable, runMode never), so it is compatible with Axis OS 12+. Other ACAPs can call the binaries directly, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs with the go2rtc ACAP, which auto-uses that path for JPEG snapshots and transcoding.
+As of version 2.0.0 this ACAP no longer needs root. It only ships the static ffmpeg/ffprobe/qt-faststart binaries (packaged world-executable, runMode never), so it is compatible with Axis OS 12+. It is built on the ACAP Native SDK 12.10.0 with a Manifest Schema v2 (`compatibleOsVersions` up to OS 13), so it is ready for Axis OS 13. Other ACAPs can call the binaries directly, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs with the go2rtc ACAP, which auto-uses that path for JPEG snapshots and transcoding.
 
 ---
 
