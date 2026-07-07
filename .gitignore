@@ -2,3 +2,11 @@
 **/.DS_Store
 build/
 *.eap
+
+# Built ffmpeg binaries — produced by the Docker build, not committed.
+*/app/lib/ffmpeg
+*/app/lib/ffprobe
+*/app/lib/qt-faststart
+
+# Temp extraction dir used to pull artifacts out of the built image.
+out/

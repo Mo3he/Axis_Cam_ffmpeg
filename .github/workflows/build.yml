@@ -1,0 +1,76 @@
+---
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build_acap:
+    name: Build ffmpeg ACAP (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: aarch64
+            dir: aarch64
+          - arch: armv7hf
+            dir: arm
+    steps:
+      - uses: actions/checkout@v6
+
+      # The Axis ACAP Native SDK image is linux/amd64 and contains the cross
+      # toolchain. GitHub runners are amd64, so this builds natively (no
+      # emulation). ffmpeg + x264 versions are pinned in the Dockerfile.
+      - name: Build image
+        run: docker build --tag ffmpeg-acap-${{ matrix.arch }} "${{ matrix.dir }}/"
+
+      # Extract the .eap produced by acap-build from the image.
+      - name: Extract .eap
+        run: |
+          mkdir -p dist
+          cid="$(docker create ffmpeg-acap-${{ matrix.arch }})"
+          docker cp "$cid:/opt/app" ./_app
+          docker rm "$cid"
+          cp _app/*.eap dist/
+
+      - name: Verify binary
+        run: |
+          set -e
+          eap="$(ls dist/*.eap)"
+          echo "Built: $eap"
+          tar tzf "$eap" | grep -E 'lib/ffmpeg$'
+          # Confirm the bundled ffmpeg is the pinned release with x264.
+          strings _app/lib/ffmpeg | grep -q 'FFmpeg version 7.1.1'
+          strings _app/lib/ffmpeg | grep -qi 'libx264'
+          echo "OK: ffmpeg 7.1.1 with libx264"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-${{ matrix.arch }}
+          path: dist/*.eap
+          if-no-files-found: error
+
+  release:
+    name: Attach .eap files to release
+    needs: build_acap
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create/attach release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.eap
+          fail_on_unmatched_files: true
