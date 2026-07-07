@@ -1,36 +1,52 @@
 # Contributing
 
-Thanks for your interest in improving this ACAP. Contributions of all kinds are
-welcome: bug reports, fixes, features, and documentation.
+Thanks for helping improve this ACAP. Bug reports, fixes, features, and docs are
+all welcome.
 
-## Getting started
+## Reporting issues
 
-- Read the `README.md` for what the app does and how to build it.
-- Build and packaging steps live in the README and the build tooling of this
-  repository.
-- For security issues, please follow `SECURITY.md` rather than opening a public
-  issue.
+- Bugs and feature requests: open a GitHub issue and include your camera model,
+  Axis OS version, the app version (or `.eap` filename), and steps to reproduce.
+- Security vulnerabilities: please do not open a public issue; follow
+  `SECURITY.md`.
+
+## Building
+
+The FFmpeg binaries are compiled from pinned source (see `THIRD_PARTY_NOTICES.md`)
+by the per-architecture Dockerfiles. Each architecture builds from its own
+directory using the Axis ACAP Native SDK image. Docker (or Apple `container`)
+must be installed. For example, aarch64:
+
+```sh
+cd aarch64                 # or arm/ for armv7hf
+docker build --tag ffmpeg-acap .
+docker cp "$(docker create ffmpeg-acap)":/opt/app ./build   # extract the .eap
+```
+
+The pinned FFmpeg and x264 versions are `ARG`s at the top of each Dockerfile.
+Install the resulting `.eap` on a camera under **Apps > Add app**. Because this
+is a binary provider (`runMode: never`), verify by calling the binary from
+another ACAP or over SSH, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg -version`.
 
 ## Pull requests
 
-1. Fork the repository and create a branch for your change.
-2. Keep changes focused: one logical change per pull request.
-3. Update documentation (`README.md`) when behaviour or settings change.
-4. Make sure the project still builds before opening the pull request.
-5. Describe what the change does and why in the pull request description.
+1. Fork the repository and branch from `main`.
+2. Keep each pull request focused on one logical change.
+3. Build both architectures locally before submitting.
+4. If you change the FFmpeg/x264 versions or configure flags, update
+   `THIRD_PARTY_NOTICES.md` to match.
+5. Explain what the change does and why in the description.
 
 ## Code style
 
-- C code follows the `.clang-format` in this repository; run `clang-format`
-  before committing.
-- Keep Markdown clean (see `.markdownlint.yaml`): wrap bare URLs and emails in
+- Keep Markdown lint-clean (`.markdownlint.yaml`): wrap bare URLs and emails in
   angle brackets and give code fences a language.
-- Match the existing style of the surrounding code.
+- Match the surrounding code and keep diffs minimal.
 
 ## Licensing
 
-By contributing, you agree that your contributions are licensed under this
-repository's license (see `LICENSE`). The FFmpeg binaries this package builds
-are separately licensed under the GPL-3.0 (see `THIRD_PARTY_NOTICES.md`). This
-is an independent, community project and is not affiliated with or endorsed by
-Axis Communications.
+By contributing, you agree that your contributions to the ACAP packaging are
+licensed under this repository's `LICENSE` (BSD 3-Clause). The bundled FFmpeg
+binaries remain under the GPL-3.0 (see `THIRD_PARTY_NOTICES.md`). This is an
+independent, community project and is not affiliated with or endorsed by Axis
+Communications.
