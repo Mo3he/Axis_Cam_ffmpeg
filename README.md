@@ -90,7 +90,7 @@ docker cp $(docker create <package name>):/opt/app ./build
 
 ## License
 
-The ffmpeg binaries are static builds distributed under the GPL. ffmpeg source and license: https://ffmpeg.org/. The packaging scripts in this repo are MIT (see [LICENSE](LICENSE)).
+The ffmpeg binaries are built from pinned source (ffmpeg + x264) and are distributed under the GPL. ffmpeg source and license: <https://ffmpeg.org/>. The packaging scripts in this repo are BSD 3-Clause (see [LICENSE](LICENSE)); bundled third-party components are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 
 
