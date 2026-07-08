@@ -37,7 +37,7 @@ Compatible with Axis cameras with arm and aarch64 based SoCs.
 
 To check your camera architecture:
 
-```
+```sh
 curl --anyauth "*" -u <username>:<password> <device ip>/axis-cgi/basicdeviceinfo.cgi --data "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllProperties\"}"
 ```
 
@@ -61,7 +61,7 @@ On uninstall, all files are removed from the camera.
 
 The package only stages the binaries; there is nothing to start. They live at:
 
-```
+```text
 /usr/local/packages/ffmpeg/lib/ffmpeg
 /usr/local/packages/ffmpeg/lib/ffprobe
 /usr/local/packages/ffmpeg/lib/qt-faststart
@@ -69,7 +69,7 @@ The package only stages the binaries; there is nothing to start. They live at:
 
 They are world-executable, so other ACAPs (for example the go2rtc ACAP) can call them directly, and you can invoke them over ssh:
 
-```
+```sh
 /usr/local/packages/ffmpeg/lib/ffmpeg -h
 ```
 
@@ -99,8 +99,3 @@ docker cp $(docker create <package name>):/opt/app ./build
 ## License
 
 The ffmpeg binaries are built from pinned source (ffmpeg + x264) and are distributed under the GPL. ffmpeg source and license: <https://ffmpeg.org/>. The packaging scripts in this repo are BSD 3-Clause (see [LICENSE](LICENSE)); bundled third-party components are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
-
-
-
-

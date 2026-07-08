@@ -16,12 +16,12 @@ REPO_ROOT=$(cd -P "$(dirname "$0")" && pwd)
 # Map an architecture name to its source subdirectory.
 arch_dir() {
 	case "$1" in
-		aarch64) echo aarch64 ;;
-		armv7hf | arm) echo arm ;;
-		*)
-			echo "Error: unknown architecture '$1' (use aarch64 or armv7hf)" >&2
-			exit 1
-			;;
+	aarch64) echo aarch64 ;;
+	armv7hf | arm) echo arm ;;
+	*)
+		echo "Error: unknown architecture '$1' (use aarch64 or armv7hf)" >&2
+		exit 1
+		;;
 	esac
 }
 
@@ -52,7 +52,7 @@ build_arch() {
 	# Copy the packaged .eap out of the built image via a throwaway container.
 	CID=$("$RUNTIME" create "$TAG")
 	TMP=$(mktemp -d)
-	"$RUNTIME" cp "${CID}:/opt/app/." "$TMP/" >/dev/null 2>&1 || \
+	"$RUNTIME" cp "${CID}:/opt/app/." "$TMP/" >/dev/null 2>&1 ||
 		"$RUNTIME" cp "${CID}:/opt/app" "$TMP/"
 	find "$TMP" -name '*.eap' -exec cp {} "${REPO_ROOT}/" \;
 	rm -rf "$TMP"
