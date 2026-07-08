@@ -77,12 +77,20 @@ They are world-executable, so other ACAPs (for example the go2rtc ACAP) can call
 
 ## Build from Source
 
-From the main directory of the version you want (arm/aarch64):
+Use the top-level `build.sh` wrapper, which builds the ACAP `.eap` package and
+drops it in the repository root:
 
+```sh
+./build.sh            # build both aarch64 and armv7hf
+./build.sh aarch64    # build a single architecture (aarch64 or armv7hf)
 ```
-docker build --tag <package name> .
-```
-```
+
+It auto-detects `docker` or `podman`; override with `RUNTIME=docker`. To build a
+single architecture manually, run the Dockerfile in its subdirectory
+(`arm/` or `aarch64/`) directly:
+
+```sh
+docker build --tag <package name> aarch64
 docker cp $(docker create <package name>):/opt/app ./build
 ```
 
