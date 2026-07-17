@@ -1,65 +1,53 @@
-# The ffmpeg installer ACAP
+# ffmpeg ACAP for Axis Cameras
 
-This ACAP packages the scripts and files required to install the ffmpeg binaries on Axis Cameras.
+[![Release](https://img.shields.io/github/v/release/Mo3he/Axis_Cam_ffmpeg?style=flat)](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases)
+[![License](https://img.shields.io/github/license/Mo3he/Axis_Cam_ffmpeg?style=flat)](LICENSE)
+[![Build](https://github.com/Mo3he/Axis_Cam_ffmpeg/actions/workflows/build.yml/badge.svg)](https://github.com/Mo3he/Axis_Cam_ffmpeg/actions/workflows/build.yml)
+[![Super-Linter](https://github.com/Mo3he/Axis_Cam_ffmpeg/actions/workflows/super-linter.yml/badge.svg)](https://github.com/Mo3he/Axis_Cam_ffmpeg/actions/workflows/super-linter.yml)
+[![Sponsor](https://img.shields.io/badge/Sponsor%20My%20Work-EA4AAA?style=flat&logo=github&logoColor=white)](https://github.com/sponsors/Mo3he)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/mo3he)
 
-[![Releases](https://img.shields.io/github/v/release/Mo3he/Axis_Cam_ffmpeg)](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases)  
-[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-lightgrey?logo=github)](https://github.com/sponsors/Mo3he)  
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-orange?style=flat&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/mo3he)
+This ACAP packages the scripts and files required to install the ffmpeg binaries
+on Axis cameras, so other ACAPs can call `ffmpeg`, `ffprobe`, and `qt-faststart`
+directly on the device.
 
-> **Disclaimer:** This is an independent, community-developed ACAP package and is not an official Axis Communications product. It is not affiliated with, endorsed by, or supported by Axis Communications AB. Use it at your own risk. For official Axis software, visit axis.com.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Compatibility](#compatibility)
-- [Installation](#installation)
-- [Using the ffmpeg ACAP](#using-the-ffmpeg-acap)
-- [Build from Source](#build-from-source)
-- [License](#license)
-
----
+> **Disclaimer:** Independent, community-developed ACAP package. Not an official
+> Axis product and not affiliated with, endorsed by, or supported by Axis
+> Communications AB or the FFmpeg project. Use at your own risk.
 
 ## Overview
 
-ffmpeg is a complete, cross-platform solution to record, convert and stream audio and video.
+ffmpeg is a complete, cross-platform solution to record, convert and stream
+audio and video.
 
-Current version: **2.0.0**
-
-As of version 2.0.0 this ACAP no longer needs root. It only ships the static ffmpeg/ffprobe/qt-faststart binaries (packaged world-executable, runMode never), so it is compatible with Axis OS 12+. It is built on the ACAP Native SDK 12.10.0 with a Manifest Schema v2 (`compatibleOsVersions` up to OS 13), so it is ready for Axis OS 13. Other ACAPs can call the binaries directly, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs with the go2rtc ACAP, which auto-uses that path for JPEG snapshots and transcoding.
-
----
+As of version 2.0.0 this ACAP no longer needs root. It only ships the static
+`ffmpeg`/`ffprobe`/`qt-faststart` binaries (packaged world-executable,
+`runMode: never`), so it is compatible with AXIS OS 12+. Other ACAPs can call
+the binaries directly, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs
+with the [go2rtc ACAP](https://github.com/Mo3he/Axis_Cam_go2rtc), which
+auto-uses that path for JPEG snapshots and transcoding.
 
 ## Compatibility
 
-Compatible with Axis cameras with arm and aarch64 based SoCs.
-
-To check your camera architecture:
-
-```sh
-curl --anyauth "*" -u <username>:<password> <device ip>/axis-cgi/basicdeviceinfo.cgi --data "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllProperties\"}"
-```
-
----
+- **AXIS OS:** 11.x through 13.
+- **Architectures:** `aarch64` and `armv7hf`.
 
 ## Installation
 
-Get the **prebuilt `.eap` file** from the [Releases page](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases).
+Get the **prebuilt `.eap` file** from the
+[Releases page](https://github.com/Mo3he/Axis_Cam_ffmpeg/releases).
 
 1. Log into your Axis camera.
 2. Go to **Apps -> Add App**.
 3. Upload the `.eap` file.
 
-The app installs Stopped and never runs (runMode never); it only places the binaries on the device.
+The app installs Stopped and never runs (`runMode: never`); it only places the
+binaries on the device. On uninstall, all files are removed from the camera.
 
-On uninstall, all files are removed from the camera.
+## Configuration
 
----
-
-## Using the ffmpeg ACAP
-
-The package only stages the binaries; there is nothing to start. They live at:
+There is nothing to start or configure. The package only stages the binaries,
+which live at:
 
 ```text
 /usr/local/packages/ffmpeg/lib/ffmpeg
@@ -67,15 +55,20 @@ The package only stages the binaries; there is nothing to start. They live at:
 /usr/local/packages/ffmpeg/lib/qt-faststart
 ```
 
-They are world-executable, so other ACAPs (for example the go2rtc ACAP) can call them directly, and you can invoke them over ssh:
+They are world-executable, so other ACAPs (for example the go2rtc ACAP) can call
+them directly, and you can invoke them over ssh:
 
 ```sh
 /usr/local/packages/ffmpeg/lib/ffmpeg -h
 ```
 
----
+## Ports & security
 
-## Build from Source
+This package opens no network ports and runs no service. It only stages the
+ffmpeg binaries on disk for other ACAPs to call locally, so it exposes nothing on
+the camera's network interface.
+
+## Build from source
 
 Use the top-level `build.sh` wrapper, which builds the ACAP `.eap` package and
 drops it in the repository root:
@@ -94,8 +87,17 @@ docker build --tag <package name> aarch64
 docker cp $(docker create <package name>):/opt/app ./build
 ```
 
----
+## Links
+
+- [FFmpeg](https://ffmpeg.org/)
+- [Axis Communications](https://www.axis.com/)
 
 ## License
 
-The ffmpeg binaries are built from pinned source (ffmpeg + x264) and are distributed under the GPL. ffmpeg source and license: <https://ffmpeg.org/>. The packaging scripts in this repo are BSD 3-Clause (see [LICENSE](LICENSE)); bundled third-party components are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The packaging code in this repository is licensed under BSD 3-Clause (see
+[LICENSE](LICENSE)).
+
+The bundled `ffmpeg` and `x264` binaries are built from pinned source and are
+distributed under the **GPL-3.0**. ffmpeg source and license: <https://ffmpeg.org/>.
+Bundled third-party components are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
