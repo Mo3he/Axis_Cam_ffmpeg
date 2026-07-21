@@ -4,8 +4,8 @@
       "setup": {
           "appName": "ffmpeg",
           "friendlyName": "ffmpeg",
-          "vendor": "Mo3he",
-          "vendorId": "5741c1fb91",
+          "vendor": "moshe@mohome.net",
+          "vendorId": "70ee172dd9",
           "vendorUrl": "https://github.com/Mo3he/Axis_Cam_ffmpeg",
           "runMode": "never",
           "version": "2.0.0",
