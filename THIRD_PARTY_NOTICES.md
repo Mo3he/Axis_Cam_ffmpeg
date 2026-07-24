@@ -15,18 +15,25 @@ are licensed under the GPL as described below.
 - License: **GNU General Public License, version 3 (GPL-3.0)** — configured with
   `--enable-gpl --enable-version3`.
 
-### Statically linked GPL library
+### Statically linked libraries
 
 - **x264** (H.264 encoder) — <https://code.videolan.org/videolan/x264>
   - License: **GPL-2.0-or-later**
   - Pinned commit: `b35605ace3ddf7c1a5d67a2eb553f034aef41d55`
     (`X264_COMMIT` in the Dockerfiles)
+- **libopus** (Opus audio encoder/decoder) — <https://opus-codec.org/>
+  - License: **BSD-3-Clause**
+  - Version: **1.5.2** (pinned; `OPUS_VERSION` in the Dockerfiles)
+  - Source: <https://downloads.xiph.org/releases/opus/opus-1.5.2.tar.gz>
+    (sha256 `65c1d2f78b9f2fb20082c38cbe47c951ad5839345876e46941612ee87f9a7ce1`,
+    verified at build time)
 
 Because x264 (GPL) is statically linked, the combined FFmpeg binary is
-distributed under the GPL-3.0. All other codecs (MJPEG/JPEG, AAC, and common
-demuxers/muxers/filters) are FFmpeg's own built-in implementations. This is a
-deliberately reduced, camera-focused build; it does not include the wider codec
-set of general-purpose FFmpeg distributions.
+distributed under the GPL-3.0. libopus is BSD-3-Clause, which is GPL-compatible.
+All other codecs (MJPEG/JPEG, AAC, and common demuxers/muxers/filters) are
+FFmpeg's own built-in implementations. This is a deliberately reduced,
+camera-focused build; it does not include the wider codec set of
+general-purpose FFmpeg distributions.
 
 > FFmpeg is invoked as a standalone executable by other applications; it is not
 > linked into this repository's packaging code. The packaging code therefore
@@ -35,8 +42,9 @@ set of general-purpose FFmpeg distributions.
 ## GPL-3.0 corresponding source
 
 The complete corresponding source for these binaries is fully described by this
-repository: the pinned FFmpeg release (with verified sha256) and the pinned
-x264 commit are fetched and compiled by `aarch64/Dockerfile` / `arm/Dockerfile`.
+repository: the pinned FFmpeg release (with verified sha256), the pinned x264
+commit, and the pinned libopus release (with verified sha256) are fetched and
+compiled by `aarch64/Dockerfile` / `arm/Dockerfile`.
 Anyone can reproduce the exact binaries with, e.g.:
 
 ```text

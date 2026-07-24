@@ -12,9 +12,17 @@ FROM ${REPO}/${SDK}:${VERSION}-${ARCH}-ubuntu${UBUNTU_VERSION}
 # Replaces the previously bundled johnvansickle static binaries so that the
 # GPL "corresponding source" is fully described by the pinned versions below.
 #
-# Codec scope: H.264 encode via libx264 (GPL) plus ffmpeg's built-in MJPEG/JPEG
-# and AAC encoders and common demuxers/muxers/filters. Minimal set covering the
-# go2rtc "snapshots + transcoding" use case.
+# Codec scope: H.264 encode via libx264 (GPL) and Opus audio via libopus, plus
+# ffmpeg's built-in MJPEG/JPEG and AAC encoders and common demuxers/muxers/
+# filters, with network + the RTSP/RTP muxers and demuxers enabled. This is the
+# minimal set covering the go2rtc "snapshots + transcoding" use case: go2rtc
+# drives ffmpeg over its internal RTSP server, so the RTSP muxer and libopus
+# (for #audio=opus / WebRTC audio) are mandatory.
+#
+# NOTE: the Axis SDK sysroot ships its own stripped-down system FFmpeg 8.0
+# (configured with --disable-everything: no RTSP muxer, no libopus). Those
+# shared libraries are removed below before the ffmpeg build so the linker uses
+# our freshly built static libav* libraries instead of the crippled system ones.
 #
 # Pins (override with --build-arg; keep in sync with THIRD_PARTY_NOTICES.md):
 ARG FFMPEG_VERSION=7.1.1
@@ -24,6 +32,9 @@ ARG FFMPEG_VERSION=7.1.1
 ARG FFMPEG_SHA256=733984395e0dbbe5c046abda2dc49a5544e7e0e1e2366bba849222ae9e3a03b1
 # Pin x264 to an exact commit for reproducible corresponding source.
 ARG X264_COMMIT=b35605ace3ddf7c1a5d67a2eb553f034aef41d55
+# libopus (BSD): required by go2rtc for #audio=opus (WebRTC audio).
+ARG OPUS_VERSION=1.5.2
+ARG OPUS_SHA256=65c1d2f78b9f2fb20082c38cbe47c951ad5839345876e46941612ee87f9a7ce1
 # ffmpeg configure --arch value for this image.
 ARG FFARCH=aarch64
 
@@ -50,6 +61,33 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --disable-cli --disable-opencl && \
     make -j"$(nproc)" && make install
 
+# --- libopus (BSD): static, PIC -------------------------------------------
+RUN . /opt/axis/acapsdk/environment-setup* && \
+    test -n "${OPUS_SHA256}" || { echo "ERROR: set --build-arg OPUS_SHA256=<official sha256>"; exit 1; }; \
+    curl -fsSLO "https://downloads.xiph.org/releases/opus/opus-${OPUS_VERSION}.tar.gz" && \
+    echo "${OPUS_SHA256}  opus-${OPUS_VERSION}.tar.gz" | sha256sum -c - && \
+    tar xf "opus-${OPUS_VERSION}.tar.gz" && \
+    cd "opus-${OPUS_VERSION}" && \
+    HOST="$(echo "${CROSS_COMPILE}" | sed 's/-$//')" && \
+    ./configure \
+        --host="${HOST}" \
+        --prefix=/build/prefix \
+        --enable-static --disable-shared --with-pic \
+        --disable-doc --disable-extra-programs && \
+    make -j"$(nproc)" && make install
+
+# The Axis SDK sysroot ships a stripped-down system FFmpeg 8.0 (built with
+# --disable-everything: no RTSP muxer, no libopus). If those shared libraries
+# stay in the sysroot the linker binds our ffmpeg to them and the binary loads
+# the crippled system libav* at runtime, so go2rtc fails with
+# "Requested output format 'rtsp' is not known". Remove them so our own static
+# libraries are linked instead.
+RUN . /opt/axis/acapsdk/environment-setup* && \
+    for l in avutil avcodec avformat avfilter avdevice swscale swresample postproc; do \
+        rm -f "${SDKTARGETSYSROOT}/usr/lib/lib${l}".so*; \
+        rm -f "${SDKTARGETSYSROOT}/usr/lib/pkgconfig/lib${l}.pc"; \
+    done
+
 # --- ffmpeg (GPL-3.0): static, camera-focused -----------------------------
 RUN . /opt/axis/acapsdk/environment-setup* && \
     test -n "${FFMPEG_SHA256}" || { echo "ERROR: set --build-arg FFMPEG_SHA256=<official sha256>"; exit 1; }; \
@@ -69,10 +107,12 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --ranlib="${RANLIB}" --strip="${STRIP}" --as="${CC}" \
         --host-cc=gcc \
         --pkg-config=pkg-config --pkg-config-flags=--static \
-        --extra-cflags="-I/build/prefix/include -O2" \
+        --extra-cflags="-I/build/prefix/include -I/build/prefix/include/opus -O2" \
         --extra-ldflags="-L/build/prefix/lib" \
         --enable-gpl --enable-version3 \
         --enable-libx264 \
+        --enable-libopus \
+        --enable-network \
         --enable-static --disable-shared \
         --enable-small \
         --disable-debug --disable-doc \

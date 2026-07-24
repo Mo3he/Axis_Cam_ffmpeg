@@ -5,6 +5,16 @@ links to its full release notes on GitHub.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.0.1] - 2026-07-24 - go2rtc compatibility fix
+
+- Fixed the bundled `ffmpeg` linking against the Axis SDK's stripped-down system
+  `libav*` libraries (which lack the RTSP muxer and libopus). The binary now
+  links its own static libraries, so go2rtc's `-f rtsp` piping works instead of
+  failing with "Requested output format 'rtsp' is not known" (exit 183).
+- Added **libopus 1.5.2** and enabled `--enable-libopus` so go2rtc's
+  `#audio=opus` audio transcoding (WebRTC) works.
+- Enabled `--enable-network` explicitly.
+
 ## [2.0.0-Signed] - 2026-07-21 - FFmpeg 2.0.0 (Signed)
 
 - Packages are now signed with the Axis ACAP signing service and install
@@ -19,5 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [2.0.0] - 2026-06-29 - non-root ffmpeg ACAP
 
+[2.0.1]: https://github.com/Mo3he/Axis_Cam_ffmpeg/releases/tag/v2.0.1
 [2.0.0-2]: https://github.com/Mo3he/Axis_Cam_ffmpeg/releases/tag/v2.0.0-2
 [2.0.0]: https://github.com/Mo3he/Axis_Cam_ffmpeg/releases/tag/v2.0.0
