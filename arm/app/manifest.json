@@ -1,15 +1,19 @@
 {
   "schemaVersion": "2.0.0",
   "acapPackageConf": {
-      "setup": {
-          "appName": "ffmpeg",
-          "friendlyName": "ffmpeg",
-          "vendor": "moshe@mohome.net",
-          "vendorId": "70ee172dd9",
-          "vendorUrl": "https://github.com/Mo3he/Axis_Cam_ffmpeg",
-          "runMode": "never",
-          "version": "2.0.1",
-          "compatibleOsVersions": [ { "max": "13" } ]
+    "setup": {
+      "appName": "ffmpeg",
+      "friendlyName": "ffmpeg",
+      "vendor": "moshe@mohome.net",
+      "vendorId": "70ee172dd9",
+      "vendorUrl": "https://github.com/Mo3he/Axis_Cam_ffmpeg",
+      "runMode": "never",
+      "version": "9.0.1",
+      "compatibleOsVersions": [
+        {
+          "max": "13"
         }
-      }
+      ]
+    }
   }
+}

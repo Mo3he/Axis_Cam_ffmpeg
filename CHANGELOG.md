@@ -5,6 +5,10 @@ links to its full release notes on GitHub.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## 9.0.1 - 2026-08-21
+
+- Update to upstream 9.0.1.
+
 ## [2.0.1] - 2026-07-24 - go2rtc compatibility fix
 
 - Fixed the bundled `ffmpeg` linking against the Axis SDK's stripped-down system
