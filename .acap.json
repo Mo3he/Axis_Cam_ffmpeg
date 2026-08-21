@@ -1,0 +1,44 @@
+{
+  "app": "ffmpeg",
+  "friendlyName": "FFmpeg",
+  "versionPolicy": "mirror",
+  "upstream": {
+    "type": "github-tag",
+    "repo": "FFmpeg/FFmpeg",
+    "tagPattern": "^n[0-9]+\\.[0-9]+\\.[0-9]+$",
+    "strip": "n",
+    "note": "FFmpeg publishes no GitHub releases, only nX.Y.Z tags. Baseline holds the ACAP at 2.0.1 until upstream moves past 7.1.1.",
+    "name": "FFmpeg",
+    "changesUrl": "https://github.com/FFmpeg/FFmpeg/blob/n${UPSTREAM}/Changelog"
+  },
+  "build": {
+    "command": "./build.sh",
+    "env": {}
+  },
+  "pins": [
+    {
+      "file": "arm/Dockerfile",
+      "arg": "FFMPEG_VERSION"
+    },
+    {
+      "file": "aarch64/Dockerfile",
+      "arg": "FFMPEG_VERSION"
+    },
+    {
+      "file": "arm/Dockerfile",
+      "arg": "FFMPEG_SHA256",
+      "sha256Url": "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.xz"
+    },
+    {
+      "file": "aarch64/Dockerfile",
+      "arg": "FFMPEG_SHA256",
+      "sha256Url": "https://ffmpeg.org/releases/ffmpeg-${VERSION}.tar.xz"
+    }
+  ],
+  "signing": {
+    "skip": [
+      "*_acap3.eap",
+      "*_root.eap"
+    ]
+  }
+}
