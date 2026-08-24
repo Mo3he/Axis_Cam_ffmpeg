@@ -22,14 +22,17 @@ audio and video.
 
 As of version 2.0.0 this ACAP no longer needs root. It only ships the static
 `ffmpeg`/`ffprobe`/`qt-faststart` binaries (packaged world-executable,
-`runMode: never`), so it is compatible with AXIS OS 12+. Other ACAPs can call
-the binaries directly, e.g. `/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs
-with the [go2rtc ACAP](https://github.com/Mo3he/Axis_Cam_go2rtc), which
-auto-uses that path for JPEG snapshots and transcoding.
+`runMode: never`), so it is compatible with AXIS OS 12.10.68 and later. Other
+ACAPs can call the binaries directly, e.g.
+`/usr/local/packages/ffmpeg/lib/ffmpeg`. This pairs with the
+[go2rtc ACAP](https://github.com/Mo3he/Axis_Cam_go2rtc), which auto-uses that
+path for JPEG snapshots and transcoding.
 
 ## Compatibility
 
-- **AXIS OS:** 11.x through 13.
+- **AXIS OS:** 12.10.68 through 13. This is the range the device itself
+  reports under **Apps**, and it follows from building against ACAP Native
+  SDK 12.10 (the binaries need glibc 2.38+).
 - **Verified on AXIS OS 13** (13.0.0, aarch64).
 - **Architectures:** `aarch64` and `armv7hf`.
 
