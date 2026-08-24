@@ -79,7 +79,7 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
     echo "${FFMPEG_SHA256}  ffmpeg-${FFMPEG_VERSION}.tar.xz" | sha256sum -c - && \
     tar xf "ffmpeg-${FFMPEG_VERSION}.tar.xz" && \
     cd "ffmpeg-${FFMPEG_VERSION}" && \
-    PKG_CONFIG_PATH=/build/prefix/lib/pkgconfig \
+    PKG_CONFIG_PATH="/build/prefix/lib/pkgconfig:${PKG_CONFIG_PATH}" \
     ./configure \
         --prefix=/build/out \
         --enable-cross-compile \
@@ -97,10 +97,12 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --enable-libx264 \
         --enable-libopus \
         --enable-network \
+        --enable-openssl \
         --enable-static --disable-shared \
         --enable-small \
         --disable-debug --disable-doc \
-        --disable-ffplay --disable-devices \
+        --disable-ffplay \
+        --disable-devices --enable-indev=lavfi \
         --enable-ffprobe && \
     make -j"$(nproc)" && make install && \
     make tools/qt-faststart

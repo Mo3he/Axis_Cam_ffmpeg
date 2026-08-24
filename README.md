@@ -72,6 +72,12 @@ them directly, and you can invoke them over ssh:
 /usr/local/packages/ffmpeg/lib/ffmpeg -h
 ```
 
+The build is camera-focused: H.264 via libx264, Opus via libopus, FFmpeg's
+built-in MJPEG and AAC encoders, the RTSP/RTP muxers and demuxers, TLS
+(`https`, `rtmps`) via the OpenSSL that ships with AXIS OS, and the `lavfi`
+input device. It deliberately omits the wider codec set of general-purpose
+FFmpeg distributions (no libx265, libvpx, AV1 encoders or `drawtext`).
+
 ## Ports & security
 
 This package opens no network ports and runs no service. It only stages the

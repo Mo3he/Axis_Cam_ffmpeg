@@ -8,9 +8,9 @@ are licensed under the GPL as described below.
 ## FFmpeg (bundled binaries: `ffmpeg`, `ffprobe`, `qt-faststart`)
 
 - Project: <https://ffmpeg.org/>
-- Version: **7.1.1** (pinned; `FFMPEG_VERSION` in the Dockerfiles)
-- Source: <https://ffmpeg.org/releases/ffmpeg-7.1.1.tar.xz>
-  (sha256 `733984395e0dbbe5c046abda2dc49a5544e7e0e1e2366bba849222ae9e3a03b1`,
+- Version: **9.0.1** (pinned; `FFMPEG_VERSION` in the Dockerfiles)
+- Source: <https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz>
+  (sha256 `cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635`,
   verified at build time)
 - License: **GNU General Public License, version 3 (GPL-3.0)** — configured with
   `--enable-gpl --enable-version3`.
@@ -27,6 +27,14 @@ are licensed under the GPL as described below.
   - Source: <https://downloads.xiph.org/releases/opus/opus-1.5.2.tar.gz>
     (sha256 `65c1d2f78b9f2fb20082c38cbe47c951ad5839345876e46941612ee87f9a7ce1`,
     verified at build time)
+
+### Dynamically linked system libraries
+
+- **OpenSSL** (TLS, for `https`/`rtmps`) — <https://www.openssl.org/>
+  - License: **Apache-2.0**, which is GPL-3.0-compatible; FFmpeg is configured
+    with `--enable-version3`, as OpenSSL 3.x requires when combined with the GPL.
+  - Not bundled: the binaries link the `libssl.so.3` / `libcrypto.so.3` that
+    ship with AXIS OS (OpenSSL 3.5.6 in the ACAP SDK 12.10 sysroot).
 
 Because x264 (GPL) is statically linked, the combined FFmpeg binary is
 distributed under the GPL-3.0. libopus is BSD-3-Clause, which is GPL-compatible.

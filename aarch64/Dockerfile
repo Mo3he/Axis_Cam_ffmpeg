@@ -19,6 +19,14 @@ FROM ${REPO}/${SDK}:${VERSION}-${ARCH}-ubuntu${UBUNTU_VERSION}
 # drives ffmpeg over its internal RTSP server, so the RTSP muxer and libopus
 # (for #audio=opus / WebRTC audio) are mandatory.
 #
+# TLS: --enable-openssl links the sysroot's OpenSSL 3.x *dynamically* (AXIS OS
+# ships libssl.so.3), so https/rtmps cost almost no package size and peer
+# verification uses the device CA store at OPENSSLDIR /usr/lib/ssl-3. OpenSSL 3
+# is Apache-2.0, GPL-compatible here because of --enable-version3.
+#
+# --enable-indev=lavfi restores only the lavfi input device, so the common
+# `-f lavfi -i anullsrc` idiom works; every other in/outdev stays disabled.
+#
 # NOTE: the Axis SDK sysroot ships its own stripped-down system FFmpeg 8.0
 # (configured with --disable-everything: no RTSP muxer, no libopus). Those
 # shared libraries are removed below before the ffmpeg build so the linker uses
@@ -95,7 +103,7 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
     echo "${FFMPEG_SHA256}  ffmpeg-${FFMPEG_VERSION}.tar.xz" | sha256sum -c - && \
     tar xf "ffmpeg-${FFMPEG_VERSION}.tar.xz" && \
     cd "ffmpeg-${FFMPEG_VERSION}" && \
-    PKG_CONFIG_PATH=/build/prefix/lib/pkgconfig \
+    PKG_CONFIG_PATH="/build/prefix/lib/pkgconfig:${PKG_CONFIG_PATH}" \
     ./configure \
         --prefix=/build/out \
         --enable-cross-compile \
@@ -113,10 +121,12 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --enable-libx264 \
         --enable-libopus \
         --enable-network \
+        --enable-openssl \
         --enable-static --disable-shared \
         --enable-small \
         --disable-debug --disable-doc \
-        --disable-ffplay --disable-devices \
+        --disable-ffplay \
+        --disable-devices --enable-indev=lavfi \
         --enable-ffprobe && \
     make -j"$(nproc)" && make install && \
     make tools/qt-faststart

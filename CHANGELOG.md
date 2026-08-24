@@ -5,9 +5,17 @@ links to its full release notes on GitHub.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## 9.0.1 - 2026-08-21
+## 9.0.1 - 2026-08-24
 
 - Update to upstream 9.0.1.
+- **Added HTTPS/TLS support** (`--enable-openssl`). `https://` and `rtmps://`
+  URLs now work; previously any TLS URL failed with "Protocol not found".
+  OpenSSL is linked dynamically against the copy that ships with AXIS OS, so
+  the package size is essentially unchanged.
+- **Restored the `lavfi` input device** (`--enable-indev=lavfi`), so the common
+  `-f lavfi -i anullsrc` idiom works instead of failing with
+  "Unknown input format: 'lavfi'".
+- Corrected `THIRD_PARTY_NOTICES.md`, which still referenced FFmpeg 7.1.1.
 
 ## [2.0.1] - 2026-07-24 - go2rtc compatibility fix
 
