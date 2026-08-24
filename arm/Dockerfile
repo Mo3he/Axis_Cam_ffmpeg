@@ -98,6 +98,7 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --enable-libopus \
         --enable-network \
         --enable-openssl \
+        --disable-libdrm \
         --enable-static --disable-shared \
         --enable-small \
         --disable-debug --disable-doc \

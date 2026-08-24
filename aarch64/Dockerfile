@@ -27,6 +27,12 @@ FROM ${REPO}/${SDK}:${VERSION}-${ARCH}-ubuntu${UBUNTU_VERSION}
 # --enable-indev=lavfi restores only the lavfi input device, so the common
 # `-f lavfi -i anullsrc` idiom works; every other in/outdev stays disabled.
 #
+# --disable-libdrm is REQUIRED: libdrm is in the SDK sysroot but NOT on the
+# device, and libavutil links it opportunistically (avutil_suggest). While all
+# devices were disabled the linker pruned libavdevice and hid this; enabling
+# lavfi pulls it back in and the binary dies with "libdrm.so.2: cannot open
+# shared object file".
+#
 # NOTE: the Axis SDK sysroot ships its own stripped-down system FFmpeg 8.0
 # (configured with --disable-everything: no RTSP muxer, no libopus). Those
 # shared libraries are removed below before the ffmpeg build so the linker uses
@@ -122,6 +128,7 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --enable-libopus \
         --enable-network \
         --enable-openssl \
+        --disable-libdrm \
         --enable-static --disable-shared \
         --enable-small \
         --disable-debug --disable-doc \
