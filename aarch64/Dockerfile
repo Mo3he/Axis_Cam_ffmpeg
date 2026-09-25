@@ -7,52 +7,28 @@ ARG SDK=acap-native-sdk
 FROM ${REPO}/${SDK}:${VERSION}-${ARCH}-ubuntu${UBUNTU_VERSION}
 
 # ---------------------------------------------------------------------------
-# Self-built, camera-focused ffmpeg (GPL-3.0).
+# Self-built, camera-focused ffmpeg (GPL-3.0) so the GPL corresponding source is
+# fully described by the pins below. go2rtc drives ffmpeg over its RTSP server,
+# so the RTSP muxer and libopus (#audio=opus / WebRTC audio) are mandatory.
 #
-# Replaces the previously bundled johnvansickle static binaries so that the
-# GPL "corresponding source" is fully described by the pinned versions below.
-#
-# Codec scope: H.264 encode via libx264 (GPL) and Opus audio via libopus, plus
-# ffmpeg's built-in MJPEG/JPEG and AAC encoders and common demuxers/muxers/
-# filters, with network + the RTSP/RTP muxers and demuxers enabled. This is the
-# minimal set covering the go2rtc "snapshots + transcoding" use case: go2rtc
-# drives ffmpeg over its internal RTSP server, so the RTSP muxer and libopus
-# (for #audio=opus / WebRTC audio) are mandatory.
-#
-# TLS: --enable-openssl links the sysroot's OpenSSL 3.x *dynamically* (AXIS OS
-# ships libssl.so.3), so https/rtmps cost almost no package size and peer
-# verification uses the device CA store at OPENSSLDIR /usr/lib/ssl-3. OpenSSL 3
-# is Apache-2.0, GPL-compatible here because of --enable-version3.
-#
-# --enable-indev=lavfi restores only the lavfi input device, so the common
-# `-f lavfi -i anullsrc` idiom works; every other in/outdev stays disabled.
-#
-# --disable-libdrm is REQUIRED: libdrm is in the SDK sysroot but NOT on the
-# device, and libavutil links it opportunistically (avutil_suggest). While all
-# devices were disabled the linker pruned libavdevice and hid this; enabling
-# lavfi pulls it back in and the binary dies with "libdrm.so.2: cannot open
-# shared object file".
-#
-# NOTE: the Axis SDK sysroot ships its own stripped-down system FFmpeg 8.0
-# (configured with --disable-everything: no RTSP muxer, no libopus). Those
-# shared libraries are removed below before the ffmpeg build so the linker uses
-# our freshly built static libav* libraries instead of the crippled system ones.
+# --enable-openssl links the device's OpenSSL 3 dynamically (AXIS OS ships
+# libssl.so.3, CA store at /usr/lib/ssl-3); Apache-2.0 is GPL-compatible
+# thanks to --enable-version3.
+# --enable-indev=lavfi keeps `-f lavfi -i anullsrc` working; other devices stay off.
+# --disable-libdrm is REQUIRED: libdrm is in the SDK sysroot but not on the device;
+# lavfi pulls it in and the binary dies with "libdrm.so.2: cannot open shared object".
 #
 # Pins (override with --build-arg; keep in sync with THIRD_PARTY_NOTICES.md):
 ARG FFMPEG_VERSION=9.0.2
-# Official sha256 of ffmpeg-${FFMPEG_VERSION}.tar.xz. REQUIRED for a release
-# build; the build fails if unset or mismatched. Do not leave blank when cutting
-# a real release.
+# Official sha256 of ffmpeg-${FFMPEG_VERSION}.tar.xz; the build fails if unset or mismatched.
 ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
 # Pin x264 to an exact commit for reproducible corresponding source.
 ARG X264_COMMIT=b35605ace3ddf7c1a5d67a2eb553f034aef41d55
 # libopus (BSD): required by go2rtc for #audio=opus (WebRTC audio).
 ARG OPUS_VERSION=1.5.2
 ARG OPUS_SHA256=65c1d2f78b9f2fb20082c38cbe47c951ad5839345876e46941612ee87f9a7ce1
-# ffmpeg configure --arch value for this image.
 ARG FFARCH=aarch64
 
-# Build prerequisites for cross-compiling x264 + ffmpeg with the SDK toolchain.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git curl ca-certificates xz-utils nasm yasm pkg-config make build-essential \
     && rm -rf /var/lib/apt/lists/*
@@ -90,12 +66,9 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
         --disable-doc --disable-extra-programs && \
     make -j"$(nproc)" && make install
 
-# The Axis SDK sysroot ships a stripped-down system FFmpeg 8.0 (built with
-# --disable-everything: no RTSP muxer, no libopus). If those shared libraries
-# stay in the sysroot the linker binds our ffmpeg to them and the binary loads
-# the crippled system libav* at runtime, so go2rtc fails with
-# "Requested output format 'rtsp' is not known". Remove them so our own static
-# libraries are linked instead.
+# The SDK sysroot ships a stripped-down FFmpeg 8.0 (no RTSP muxer, no libopus);
+# if left, our ffmpeg links to it and go2rtc fails with "Requested output format
+# 'rtsp' is not known". Remove it so our static libav* are used.
 RUN . /opt/axis/acapsdk/environment-setup* && \
     for l in avutil avcodec avformat avfilter avdevice swscale swresample postproc; do \
         rm -f "${SDKTARGETSYSROOT}/usr/lib/lib${l}".so*; \
@@ -138,8 +111,6 @@ RUN . /opt/axis/acapsdk/environment-setup* && \
     make -j"$(nproc)" && make install && \
     make tools/qt-faststart
 
-# Building the ACAP application (COPY app first, then overlay built binaries so
-# the freshly compiled ffmpeg replaces any previously committed blobs in app/lib).
 COPY ./app /opt/app/
 RUN . /opt/axis/acapsdk/environment-setup* && \
     mkdir -p /opt/app/lib && \

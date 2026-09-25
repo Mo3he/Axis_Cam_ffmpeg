@@ -13,7 +13,6 @@ set -eu
 
 REPO_ROOT=$(cd -P "$(dirname "$0")" && pwd)
 
-# Map an architecture name to its source subdirectory.
 arch_dir() {
 	case "$1" in
 	aarch64) echo aarch64 ;;
@@ -25,8 +24,7 @@ arch_dir() {
 	esac
 }
 
-# Auto-detect container runtime: prefer docker when its daemon is reachable,
-# otherwise fall back to podman.
+# Prefer docker only when its daemon is reachable, else podman.
 if [ -z "${RUNTIME:-}" ]; then
 	if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
 		RUNTIME=docker
