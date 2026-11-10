@@ -11,6 +11,7 @@
       "version": "9.0.2",
       "compatibleOsVersions": [
         {
+          "min": "12.10.68",
           "max": "13"
         }
       ]
