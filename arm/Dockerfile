@@ -11,9 +11,9 @@ FROM ${REPO}/${SDK}:${VERSION}-${ARCH}-ubuntu${UBUNTU_VERSION}
 # See aarch64/Dockerfile for the rationale. Same pins; only FFARCH differs.
 #
 # Pins (override with --build-arg; keep in sync with THIRD_PARTY_NOTICES.md):
-ARG FFMPEG_VERSION=9.0.2
+ARG FFMPEG_VERSION=9.0.3
 # Official sha256 of ffmpeg-${FFMPEG_VERSION}.tar.xz; the build fails if unset or mismatched.
-ARG FFMPEG_SHA256=8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
+ARG FFMPEG_SHA256=ca9648b3add91f598ae8fecdddc18d8e58adc210efff22fd14a3ed39664aa7da
 # Pin x264 to an exact commit for reproducible corresponding source.
 ARG X264_COMMIT=b35605ace3ddf7c1a5d67a2eb553f034aef41d55
 # libopus (BSD): required by go2rtc for #audio=opus (WebRTC audio).
